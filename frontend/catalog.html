@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>OrderTrack Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo">OrderTrack</div>
+        <div class="user-info">
+            <span id="user-role"></span>
+            <button onclick="logout()" class="logout-btn">Cerrar sesión</button>
+        </div>
+    </header>
+
+    <main class="dashboard">
+        <h1>Panel de bienvenida</h1>
+
+        <section id="admin-user-section" class="admin-panel">
+            <h2>Crear operador</h2>
+            <input type="text" id="operator-username" placeholder="Usuario">
+            <input type="password" id="operator-password" placeholder="Contraseña">
+            <button onclick="createOperator()">Crear operador</button>
+        </section>
+
+        <section id="admin-product-section" class="admin-panel">
+            <h2>Crear producto</h2>
+            <input type="text" id="product-name" placeholder="Nombre producto">
+            <input type="number" id="product-price" placeholder="Precio">
+            <button onclick="createProduct()">Crear producto</button>
+        </section>
+
+        <section class="catalog-section">
+            <h2>Productos disponibles</h2>
+            <ul id="product-list"></ul>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

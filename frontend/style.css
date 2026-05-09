@@ -1,0 +1,157 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #FFF8E7;
+}
+
+/* NAVBAR */
+
+.navbar {
+    background-color: #FF1F23;
+
+    color: white;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 15px 30px;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logout-btn {
+    background-color: #FFFB1F;
+
+    border: none;
+
+    padding: 8px 12px;
+
+    border-radius: 5px;
+
+    cursor: pointer;
+
+    font-weight: bold;
+}
+
+/* DASHBOARD */
+
+.dashboard {
+    padding: 30px;
+}
+
+h1 {
+    color: #FF1F23;
+}
+
+.admin-panel,
+.catalog-section {
+    background-color: white;
+
+    padding: 20px;
+
+    margin-top: 20px;
+
+    border-radius: 10px;
+
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* INPUTS */
+
+input {
+    width: 100%;
+
+    padding: 10px;
+
+    margin-top: 10px;
+
+    border: 1px solid #ccc;
+
+    border-radius: 5px;
+
+    box-sizing: border-box;
+}
+
+/* BOTONES */
+
+button {
+    margin-top: 15px;
+
+    padding: 10px 15px;
+
+    border: none;
+
+    border-radius: 5px;
+
+    background-color: #FF8B1F;
+
+    color: white;
+
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #FF1F23;
+}
+
+/* PRODUCTOS */
+
+#product-list {
+    list-style: none;
+    padding: 0;
+}
+
+#product-list li {
+    background-color: #FFF3D1;
+
+    margin-top: 10px;
+
+    padding: 10px;
+
+    border-radius: 5px;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #FFF8E7;
+    min-height: 100vh;
+}
+
+.login-card {
+    width: 320px;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 0 12px rgba(0,0,0,0.12);
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.login-card h1 {
+    margin-top: 0;
+    text-align: center;
+    color: #FF1F23;
+}
+
+.login-card input,
+.login-card button {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 12px;
+}

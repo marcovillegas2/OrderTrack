@@ -1,0 +1,18 @@
+from sqlalchemy import Column, Integer, String
+from app.database import Base
+
+class Order(Base):
+    __tablename__ = "orders"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    client_name = Column(String, nullable=False)
+    operator_name = Column(String, nullable=False)
+
+    product_name = Column(String, nullable=False)
+
+    quantity = Column(Integer, nullable=False)
+
+    address = Column(String, nullable=False)
+
+    status = Column(String, nullable=False, default="Pendiente")
