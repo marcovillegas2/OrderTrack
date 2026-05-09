@@ -26,6 +26,10 @@ uvicorn app.main:app --reload
 ## Ejecutar tests
 pytest --cov=app
 
+## Probar en el navegador
+- Buscar frontend/login.html
+- Dale clic derecho y selecciona "Open in Browser"
+
 ## Usuario administrador
 usuario: admin
 password: 1234
