@@ -1,8 +1,11 @@
+el producto_controller.py deberia ser asi:
+
+from typing import Annotated
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.database import SessionLocal
-
 from app.schemas.producto_schema import ProductCreate
 
 from app.services.producto_service import (
@@ -21,9 +24,12 @@ def get_db():
     finally:
         db.close()
 
+
 @router.post("/products/create")
-def create_product(product: ProductCreate,
-                   db: Session = Depends(get_db)):
+def create_product(
+    product: ProductCreate,
+    db: Annotated[Session, Depends(get_db)]
+):
 
     new_product = register_product(
         db,
@@ -36,6 +42,16 @@ def create_product(product: ProductCreate,
         "product": {
             "name": new_product.name,
             "price": new_product.price
+        }
+    }
+
+
+@router.get("/products")
+def get_products(
+    db: Annotated[Session, Depends(get_db)]
+):
+
+    return list_products(db)
         }
     }
 
