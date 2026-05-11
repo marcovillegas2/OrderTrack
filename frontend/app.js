@@ -66,7 +66,7 @@ async function loadProducts() {
             document.createElement("li");
 
         item.innerText =
-            `${product.name} - S/. ${product.price}`;
+            ${product.name} - S/. ${product.price};
 
         list.appendChild(item);
     });
@@ -91,7 +91,7 @@ async function createProduct() {
 
             body: JSON.stringify({
                 name,
-                price: parseFloat(price)
+                price: Number.parseFloat(price)
             })
         }
     );
@@ -104,7 +104,7 @@ window.onload = () => {
 
     const roleLabel = document.getElementById("user-role");
     if (roleLabel) {
-        roleLabel.innerText = `Rol: ${role}`;
+        roleLabel.innerText = Rol: ${role};
     }
 
     if (role !== "admin") {
@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         document.getElementById(
             "user-role"
-        ).innerText = `Rol: ${role}`;
+        ).innerText = Rol: ${role};
     }
 });
 
