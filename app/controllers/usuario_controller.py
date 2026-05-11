@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -13,6 +15,7 @@ from app.services.usuario_service import (
 
 router = APIRouter()
 
+
 def get_db():
     db = SessionLocal()
 
@@ -21,8 +24,17 @@ def get_db():
     finally:
         db.close()
 
-@router.post("/users/create")
-def create_operator(user: UserCreate, db: Session = Depends(get_db)):
+
+@router.post(
+    "/users/create",
+    responses={
+        400: {"description": "El usuario ya existe"}
+    }
+)
+def create_operator(
+    user: UserCreate,
+    db: Annotated[Session, Depends(get_db)]
+):
 
     new_user = register_user(
         db,
@@ -41,8 +53,17 @@ def create_operator(user: UserCreate, db: Session = Depends(get_db)):
         "message": "Usuario creado correctamente"
     }
 
-@router.post("/login")
-def login(user: UserLogin, db: Session = Depends(get_db)):
+
+@router.post(
+    "/login",
+    responses={
+        401: {"description": "Credenciales incorrectas"}
+    }
+)
+def login(
+    user: UserLogin,
+    db: Annotated[Session, Depends(get_db)]
+):
 
     logged_user = login_user(
         db,
@@ -61,7 +82,10 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
         "role": logged_user.role
     }
 
+
 @router.get("/users")
-def get_users(db: Session = Depends(get_db)):
+def get_users(
+    db: Annotated[Session, Depends(get_db)]
+):
 
     return list_users(db)
