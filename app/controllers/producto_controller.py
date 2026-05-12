@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.database import SessionLocal
@@ -8,7 +8,8 @@ from app.schemas.producto_schema import ProductCreate
 
 from app.services.producto_service import (
     register_product,
-    list_products
+    list_products,
+    remove_product
 )
 
 router = APIRouter()
@@ -50,3 +51,25 @@ def get_products(
 ):
 
     return list_products(db)
+
+@router.delete("/products/{product_id}")
+def delete_product_endpoint(
+    product_id: int,
+    db: Annotated[Session, Depends(get_db)]
+):
+
+    result = remove_product(
+        db,
+        product_id
+    )
+
+    if result == "not_found":
+
+        raise HTTPException(
+            status_code=404,
+            detail="Producto no encontrado"
+        )
+
+    return {
+        "message": "Producto eliminado correctamente"
+    }

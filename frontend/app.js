@@ -58,15 +58,42 @@ async function loadProducts() {
     const list =
         document.getElementById("product-list");
 
+    if (!list) return;
+
     list.innerHTML = "";
+
+    const role =
+        localStorage.getItem("role");
 
     products.forEach(product => {
 
         const item =
             document.createElement("li");
 
-        item.innerText =
-            ${product.name} - S/. ${product.price};
+        if (role === "admin") {
+
+            item.innerHTML = `
+                <span>
+                    ${product.name} - S/. ${product.price}
+                </span>
+
+                <button
+                    class="delete-btn"
+                    onclick="deleteProduct(${product.id})">
+
+                    Eliminar
+                </button>
+            `;
+        }
+
+        else {
+
+            item.innerHTML = `
+                <span>
+                    ${product.name} - S/. ${product.price}
+                </span>
+            `;
+        }
 
         list.appendChild(item);
     });
@@ -100,25 +127,47 @@ async function createProduct() {
 }
 
 window.onload = () => {
-    const role = localStorage.getItem("role");
 
-    const roleLabel = document.getElementById("user-role");
+    const role =
+        localStorage.getItem("role");
+
+    const roleLabel =
+        document.getElementById("user-role");
+
     if (roleLabel) {
-        roleLabel.innerText = Rol: ${role};
+
+        roleLabel.innerText =
+            `Rol: ${role}`;
     }
 
     if (role !== "admin") {
-        const adminUserSection = document.getElementById("admin-user-section");
-        const adminProductSection = document.getElementById("admin-product-section");
 
-        if (adminUserSection) adminUserSection.style.display = "none";
-        if (adminProductSection) adminProductSection.style.display = "none";
+        const adminUserSection =
+            document.getElementById(
+                "admin-user-section"
+            );
+
+        if (adminUserSection) {
+
+            adminUserSection.style.display =
+                "none";
+        }
+
+        const productAdminControls =
+            document.getElementById(
+                "product-admin-controls"
+            );
+
+        if (productAdminControls) {
+
+            productAdminControls.style.display =
+                "none";
+        }
     }
 
-    if (document.getElementById("product-list")) {
-        loadProducts();
-    }
-};
+    loadProducts();
+    loadOperators();
+}
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -129,7 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         document.getElementById(
             "user-role"
-        ).innerText = Rol: ${role};
+        ).innerText = `Rol: ${role}`;
     }
 });
 
@@ -141,25 +190,97 @@ function logout() {
 }
 
 async function createOperator() {
-    const username = document.getElementById("operator-username").value;
-    const password = document.getElementById("operator-password").value;
 
-    const response = await fetch("http://127.0.0.1:8000/users/create", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            username,
-            password,
-            role: "operador"
-        })
-    });
+    const username =
+        document.getElementById(
+            "operator-username"
+        ).value;
+
+    const password =
+        document.getElementById(
+            "operator-password"
+        ).value;
+
+    const response = await fetch(
+        "http://127.0.0.1:8000/users/create",
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                username,
+                password,
+                role: "operador"
+            })
+        }
+    );
 
     if (response.ok) {
-        alert("Operador creado correctamente");
-    } else {
-        const data = await response.json();
-        alert(data.detail || "Error al crear operador");
+
+        loadOperators();
     }
+}
+
+async function loadOperators() {
+
+    const response = await fetch(
+        "http://127.0.0.1:8000/operators"
+    );
+
+    const operators = await response.json();
+
+    const list =
+        document.getElementById("operator-list");
+
+    if (!list) return;
+
+    list.innerHTML = "";
+
+    operators.forEach(operator => {
+
+        const item =
+            document.createElement("li");
+
+        item.innerHTML = `
+            <span>
+                ${operator.username}
+            </span>
+
+            <button
+                class="delete-btn"
+                onclick="deleteOperator(${operator.id})">
+
+                Eliminar
+            </button>
+        `;
+
+        list.appendChild(item);
+    });
+}
+
+async function deleteOperator(userId) {
+
+    await fetch(
+        `http://127.0.0.1:8000/operators/${userId}`,
+        {
+            method: "DELETE"
+        }
+    );
+
+    loadOperators();
+}
+
+async function deleteProduct(productId) {
+
+    await fetch(
+        `http://127.0.0.1:8000/products/${productId}`,
+        {
+            method: "DELETE"
+        }
+    );
+
+    loadProducts();
 }

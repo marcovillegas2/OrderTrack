@@ -117,3 +117,55 @@ button:hover {
     box-sizing: border-box;
     margin-top: 12px;
 }
+
+/* LISTAS ADMIN */
+
+#operator-list,
+#product-list {
+
+    list-style: none;
+
+    padding: 0;
+
+    margin-top: 20px;
+}
+
+#operator-list li,
+#product-list li {
+
+    background-color: #FFF3D1;
+
+    margin-top: 10px;
+
+    padding: 12px;
+
+    border-radius: 6px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+}
+
+/* BOTÓN ELIMINAR */
+
+.delete-btn {
+
+    background-color: #FF1F23;
+
+    color: white;
+
+    border: none;
+
+    padding: 6px 10px;
+
+    border-radius: 5px;
+
+    cursor: pointer;
+}
+
+.delete-btn:hover {
+
+    background-color: #cc0000;
+}
