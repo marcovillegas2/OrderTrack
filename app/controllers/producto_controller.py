@@ -1,5 +1,3 @@
-el producto_controller.py deberia ser asi:
-
 from typing import Annotated
 
 from fastapi import APIRouter, Depends
@@ -50,12 +48,5 @@ def create_product(
 def get_products(
     db: Annotated[Session, Depends(get_db)]
 ):
-
-    return list_products(db)
-        }
-    }
-
-@router.get("/products")
-def get_products(db: Session = Depends(get_db)):
 
     return list_products(db)
