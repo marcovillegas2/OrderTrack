@@ -6,6 +6,7 @@ from app.models import User, Product, Order
 
 from app.controllers.usuario_controller import router as user_router
 from app.controllers.producto_controller import router as product_router
+from app.controllers.orden_controller import router as order_router
 
 app = FastAPI(title="OrderTrack")
 
@@ -21,6 +22,7 @@ Base.metadata.create_all(bind=engine)
 
 app.include_router(user_router)
 app.include_router(product_router)
+app.include_router(order_router)
 
 @app.get("/health")
 def health_check():
