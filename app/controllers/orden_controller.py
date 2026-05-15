@@ -28,22 +28,17 @@ def get_db():
         db.close()
 
 
-@router.post(
-    "/orders/create",
-    response_model=OrderResponse
-)
+@router.post("/orders/create", response_model=OrderResponse)
 def create_order_endpoint(
     order: OrderCreate,
     db: Annotated[Session, Depends(get_db)]
 ):
-
     return register_order(
         db,
         order.customer_name,
         order.product_name,
         order.quantity,
-        order.address,
-        order.operator_id
+        order.address
     )
 
 

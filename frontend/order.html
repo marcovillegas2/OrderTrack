@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>OrderTrack - Realizar pedido</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="login-card">
+    <h1>Realizar pedido</h1>
+
+    <input type="text" id="customer-name" placeholder="Tu nombre">
+    <select id="product-order-name"></select>
+    <input type="number" id="order-quantity" placeholder="Cantidad">
+    <input type="text" id="order-address" placeholder="Dirección">
+
+    <button onclick="createOrder()">Enviar pedido</button>
+
+    <p id="order-message"></p>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

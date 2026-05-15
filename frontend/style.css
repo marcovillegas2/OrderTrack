@@ -121,7 +121,8 @@ button:hover {
 /* LISTAS ADMIN */
 
 #operator-list,
-#product-list {
+#product-list,
+#order-list {
 
     list-style: none;
 
@@ -131,7 +132,8 @@ button:hover {
 }
 
 #operator-list li,
-#product-list li {
+#product-list li,
+#order-list li {
 
     background-color: #FFF3D1;
 
