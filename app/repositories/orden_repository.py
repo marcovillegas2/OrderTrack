@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from app.models.orden import Order
 
+
 def create_order(
     db: Session,
     customer_name: str,
@@ -20,5 +21,17 @@ def create_order(
     db.refresh(new_order)
     return new_order
 
+
 def get_orders(db: Session):
     return db.query(Order).all()
+
+
+def get_order_by_id(db: Session, order_id: int):
+    return db.query(Order).filter(Order.id == order_id).first()
+
+
+def update_order_status(db: Session, order: Order, status: str):
+    order.status = status
+    db.commit()
+    db.refresh(order)
+    return order
