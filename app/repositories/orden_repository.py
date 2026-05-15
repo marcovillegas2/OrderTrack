@@ -35,3 +35,8 @@ def update_order_status(db: Session, order: Order, status: str):
     db.commit()
     db.refresh(order)
     return order
+
+
+def delete_order(db: Session, order: Order):
+    db.delete(order)
+    db.commit()

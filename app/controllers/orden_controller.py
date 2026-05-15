@@ -7,7 +7,8 @@ from app.schemas.orden_schema import OrderCreate, OrderResponse, OrderStatusUpda
 from app.services.orden_service import (
     register_order,
     list_orders,
-    change_order_status
+    change_order_status,
+    remove_order
 )
 
 router = APIRouter()
@@ -82,4 +83,28 @@ def update_order_status_endpoint(
         "message": "Estado actualizado correctamente",
         "order_id": result.id,
         "status": result.status
+    }
+
+
+@router.delete("/orders/{order_id}")
+def delete_order_endpoint(
+    order_id: int,
+    db: Annotated[Session, Depends(get_db)]
+):
+    result = remove_order(db, order_id)
+
+    if result == "not_found":
+        raise HTTPException(
+            status_code=404,
+            detail="Pedido no encontrado"
+        )
+
+    if result == "cannot_delete":
+        raise HTTPException(
+            status_code=400,
+            detail="No se puede eliminar un pedido entregado"
+        )
+
+    return {
+        "message": "Pedido eliminado correctamente"
     }

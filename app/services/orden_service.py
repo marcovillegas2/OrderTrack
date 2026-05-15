@@ -4,7 +4,8 @@ from app.repositories.orden_repository import (
     create_order,
     get_orders,
     get_order_by_id,
-    update_order_status
+    update_order_status,
+    delete_order
 )
 
 from app.schemas.orden_schema import OrderStatus
@@ -57,3 +58,16 @@ def change_order_status(
 
     updated_order = update_order_status(db, order, new_status)
     return updated_order
+
+
+def remove_order(db: Session, order_id: int):
+    order = get_order_by_id(db, order_id)
+
+    if not order:
+        return "not_found"
+
+    if order.status == "Entregado":
+        return "cannot_delete"
+
+    delete_order(db, order)
+    return "deleted"
