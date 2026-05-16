@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, DateTime
-from datetime import datetime
+from datetime import datetime, UTC
 from app.database import Base
 
 class Order(Base):
@@ -12,4 +12,4 @@ class Order(Base):
     address = Column(String, nullable=False)
     status = Column(String, default="Pendiente")
     operator_id = Column(Integer, nullable=True, default=None)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(UTC))
