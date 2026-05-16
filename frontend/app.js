@@ -126,43 +126,21 @@ async function createProduct() {
     loadProducts();
 }
 
-window.onload = () => {
+document.addEventListener("DOMContentLoaded", () => {
 
-    const role =
-        localStorage.getItem("role");
+    const role = localStorage.getItem("role");
 
-    const roleLabel =
-        document.getElementById("user-role");
-
+    const roleLabel = document.getElementById("user-role");
     if (roleLabel) {
-
-        roleLabel.innerText =
-            `Rol: ${role}`;
+        roleLabel.innerText = `Rol: ${role}`;
     }
 
-    if (role !== "admin") {
+    if (document.getElementById("public-product-list")) {
+        loadPublicCatalog();
+    }
 
-        const adminUserSection =
-            document.getElementById(
-                "admin-user-section"
-            );
-
-        if (adminUserSection) {
-
-            adminUserSection.style.display =
-                "none";
-        }
-
-        const productAdminControls =
-            document.getElementById(
-                "product-admin-controls"
-            );
-
-        if (productAdminControls) {
-
-            productAdminControls.style.display =
-                "none";
-        }
+    if (document.getElementById("product-order-name")) {
+        loadPublicProducts();
     }
 
     if (document.getElementById("product-list")) {
@@ -173,21 +151,30 @@ window.onload = () => {
         loadOperators();
     }
 
-    if (document.getElementById("order-list")) {
-        loadOrders();
+    if (role !== "admin") {
+
+        const adminUserSection = document.getElementById("admin-user-section");
+        if (adminUserSection) {
+            adminUserSection.style.display = "none";
+        }
+
+        const productAdminControls = document.getElementById("product-admin-controls");
+        if (productAdminControls) {
+            productAdminControls.style.display = "none";
+        }
     }
-}
 
-document.addEventListener("DOMContentLoaded", () => {
+    if (role !== "operador") {
 
-    const role =
-        localStorage.getItem("role");
+        const operatorOrdersSection = document.getElementById("operator-orders-section");
+        if (operatorOrdersSection) {
+            operatorOrdersSection.style.display = "none";
+        }
+    } else {
 
-    if (document.getElementById("user-role")) {
-
-        document.getElementById(
-            "user-role"
-        ).innerText = `Rol: ${role}`;
+        if (document.getElementById("operator-order-list")) {
+            loadDashboardOrders();
+        }
     }
 });
 
@@ -404,7 +391,142 @@ async function loadPublicProducts() {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
+    const role = localStorage.getItem("role");
+
     if (document.getElementById("product-order-name")) {
         loadPublicProducts();
     }
+
+    if (document.getElementById("product-list")) {
+        loadProducts();
+    }
+
+    if (document.getElementById("operator-list")) {
+        loadOperators();
+    }
+
+    if (document.getElementById("admin-order-list") && role === "operador") {
+        loadDashboardOrders();
+    }
 });
+
+async function loadDashboardOrders() {
+
+    const response = await fetch(
+        "http://127.0.0.1:8000/orders"
+    );
+
+    const orders = await response.json();
+
+    const list = document.getElementById("operator-order-list");
+
+    if (!list) return;
+
+    list.innerHTML = "";
+
+    const activeOrders = orders.filter(order =>
+        order.status === "Pendiente" ||
+        order.status === "Enviado"
+    );
+
+    if (activeOrders.length === 0) {
+
+        list.innerHTML = `
+            <p>No hay pedidos activos</p>
+        `;
+        return;
+    }
+
+    activeOrders.forEach(order => {
+
+        const item = document.createElement("li");
+
+        const actions = [];
+
+        if (order.status === "Pendiente") {
+
+            actions.push(`
+                <button class="status-btn" onclick="changeOrderStatus(${order.id}, 'Enviado')">
+                    Enviado
+                </button>
+            `);
+
+            actions.push(`
+                <button class="status-btn" onclick="changeOrderStatus(${order.id}, 'Cancelado')">
+                    Cancelar
+                </button>
+            `);
+        }
+
+        if (order.status === "Enviado") {
+
+            actions.push(`
+                <button class="status-btn" onclick="changeOrderStatus(${order.id}, 'Entregado')">
+                    Entregado
+                </button>
+            `);
+        }
+
+        item.innerHTML = `
+            <div class="order-info">
+                <strong>Cliente:</strong> ${order.customer_name}
+                <strong>Producto:</strong> ${order.product_name}
+                <strong>Cantidad:</strong> ${order.quantity}
+                <strong>Dirección:</strong> ${order.address}
+                <strong>Estado:</strong> ${order.status}
+            </div>
+
+            <div class="order-actions">
+                ${actions.join("")}
+            </div>
+        `;
+
+        list.appendChild(item);
+    });
+}
+
+async function changeOrderStatus(orderId, status) {
+    const response = await fetch(`http://127.0.0.1:8000/orders/${orderId}/status`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            status: status
+        })
+    });
+
+    if (response.ok) {
+        loadDashboardOrders();
+    } else {
+        const data = await response.json();
+        alert(data.detail || "No se pudo cambiar el estado");
+    }
+}
+
+async function loadPublicCatalog() {
+
+    const response = await fetch(
+        "http://127.0.0.1:8000/products"
+    );
+
+    const products = await response.json();
+
+    const list = document.getElementById("public-product-list");
+
+    if (!list) return;
+
+    list.innerHTML = "";
+
+    products.forEach(product => {
+
+        const item = document.createElement("li");
+
+        item.innerHTML = `
+            <span><strong>${product.name}</strong></span>
+            <span>S/. ${product.price}</span>
+        `;
+
+        list.appendChild(item);
+    });
+}

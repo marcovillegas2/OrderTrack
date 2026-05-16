@@ -171,3 +171,278 @@ button:hover {
 
     background-color: #cc0000;
 }
+
+#admin-order-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+#admin-order-list li {
+    background-color: #FFF3D1;
+    margin-top: 10px;
+    padding: 12px;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.order-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.order-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.status-btn {
+    background-color: #FF8B1F;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.status-btn:hover {
+    background-color: #FF1F23;
+}
+
+/* ===== INTERFAZ PÚBLICA ===== */
+
+.public-navbar {
+
+    background-color: #FF1F23;
+
+    color: white;
+
+    padding: 20px 40px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+}
+
+.public-subtitle {
+
+    font-size: 16px;
+}
+
+.public-container {
+
+    display: flex;
+
+    gap: 30px;
+
+    padding: 30px;
+
+    align-items: flex-start;
+}
+
+.catalog-public-section,
+.order-form-section {
+
+    background-color: white;
+
+    border-radius: 12px;
+
+    padding: 25px;
+
+    box-shadow: 0 0 12px rgba(0,0,0,0.1);
+}
+
+.catalog-public-section {
+
+    width: 45%;
+}
+
+.order-form-section {
+
+    width: 55%;
+}
+
+#public-product-list {
+
+    list-style: none;
+
+    padding: 0;
+}
+
+#public-product-list li {
+
+    background-color: #FFF3D1;
+
+    margin-top: 12px;
+
+    padding: 15px;
+
+    border-radius: 8px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+}
+
+.payment-box {
+
+    margin-top: 20px;
+
+    background-color: #FFF8E7;
+
+    border: 2px dashed #FF8B1F;
+
+    padding: 20px;
+
+    border-radius: 10px;
+
+    text-align: center;
+}
+
+.yape-logo {
+
+    width: 90px;
+
+    margin-top: 10px;
+}
+
+.fake-qr {
+
+    margin: 20px auto;
+
+    width: 140px;
+
+    height: 140px;
+
+    background-color: #ddd;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    font-weight: bold;
+
+    border-radius: 10px;
+}
+
+#admin-order-list p {
+
+    text-align: center;
+
+    color: #666;
+
+    padding: 20px;
+
+    background-color: #FFF3D1;
+
+    border-radius: 8px;
+}
+
+/* ===== INTERFAZ PÚBLICA ===== */
+
+.public-navbar {
+    background-color: #FF1F23;
+    color: white;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.public-subtitle {
+    font-size: 16px;
+}
+
+.public-container {
+    display: flex;
+    gap: 30px;
+    padding: 30px;
+    align-items: flex-start;
+}
+
+.catalog-public-section,
+.order-form-section {
+    background-color: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 0 12px rgba(0,0,0,0.1);
+}
+
+.catalog-public-section {
+    width: 45%;
+}
+
+.order-form-section {
+    width: 55%;
+}
+
+#public-product-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#public-product-list li {
+    background-color: #FFF3D1;
+    margin-top: 12px;
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.payment-box {
+    margin-top: 20px;
+    background-color: #FFF8E7;
+    border: 2px dashed #FF8B1F;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.fake-qr {
+    margin: 20px auto;
+    width: 140px;
+    height: 140px;
+    background-color: #ddd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    border-radius: 10px;
+}
+
+#operator-order-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+#operator-order-list li {
+    background-color: #FFF3D1;
+    margin-top: 10px;
+    padding: 12px;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#operator-order-list p {
+    text-align: center;
+    color: #666;
+    padding: 20px;
+    background-color: #FFF3D1;
+    border-radius: 8px;
+}

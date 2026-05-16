@@ -2,23 +2,47 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>OrderTrack - Realizar pedido</title>
+    <title>OrderTrack - Delivery</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="login-card">
-    <h1>Realizar pedido</h1>
+<header class="public-navbar">
+    <div class="logo">OrderTrack</div>
+    <div class="public-subtitle">Delivery rápido de comida</div>
+</header>
 
-    <input type="text" id="customer-name" placeholder="Tu nombre">
-    <select id="product-order-name"></select>
-    <input type="number" id="order-quantity" placeholder="Cantidad">
-    <input type="text" id="order-address" placeholder="Dirección">
+<main class="public-container">
 
-    <button onclick="createOrder()">Enviar pedido</button>
+    <section class="catalog-public-section">
+        <h2>Catálogo disponible</h2>
+        <ul id="public-product-list"></ul>
+    </section>
 
-    <p id="order-message"></p>
-</div>
+    <section class="order-form-section">
+        <h2>Realizar pedido</h2>
+
+        <input type="text" id="customer-name" placeholder="Tu nombre">
+
+        <select id="product-order-name"></select>
+
+        <input type="number" id="order-quantity" placeholder="Cantidad">
+
+        <input type="text" id="order-address" placeholder="Dirección de entrega">
+
+        <div class="payment-box">
+            <h3>Pago con Yape</h3>
+            <p>Simulación de pago antes de confirmar el pedido</p>
+            <div class="fake-qr">QR YAPE</div>
+            <small>Interfaz de demostración</small>
+        </div>
+
+        <button onclick="createOrder()">Confirmar pedido</button>
+
+        <p id="order-message"></p>
+    </section>
+
+</main>
 
 <script src="app.js"></script>
 </body>
