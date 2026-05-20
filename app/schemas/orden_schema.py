@@ -31,6 +31,4 @@ class OrderResponse(BaseModel):
     operator_id: int | None = None
     created_at: datetime
 
-    model_config = ConfigDict(
-        from_attributes=True
-    )
+    model_config = ConfigDict(from_attributes=True)

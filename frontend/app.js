@@ -1,3 +1,11 @@
+const ROLE_ADMIN = "admin";
+const ROLE_OPERATOR = ROLE_OPERATOR;
+
+const STATUS_PENDING = "Pendiente";
+const STATUS_SENT = "Enviado";
+const STATUS_DELIVERED = "Entregado";
+const STATUS_CANCELLED = "Cancelado";
+
 async function login() {
 
     const username =
@@ -70,7 +78,7 @@ async function loadProducts() {
         const item =
             document.createElement("li");
 
-        if (role === "admin") {
+        if (role === ROLE_ADMIN) {
 
             item.innerHTML = `
                 <span>
@@ -154,22 +162,25 @@ document.addEventListener("DOMContentLoaded", () => {
     if (role !== "admin") {
 
         const adminUserSection = document.getElementById("admin-user-section");
-        if (adminUserSection) {
-            adminUserSection.style.display = "none";
-        }
+        adminUserSection?.style.setProperty(
+            "display",
+            "none"
+        );
 
         const productAdminControls = document.getElementById("product-admin-controls");
-        if (productAdminControls) {
-            productAdminControls.style.display = "none";
-        }
+        productAdminControls?.style.setProperty(
+            "display",
+            "none"
+        );
     }
 
-    if (role !== "operador") {
+    if (role !== ROLE_OPERATOR) {
 
         const operatorOrdersSection = document.getElementById("operator-orders-section");
-        if (operatorOrdersSection) {
-            operatorOrdersSection.style.display = "none";
-        }
+        operatorOrdersSection?.style.setProperty(
+            "display",
+            "none"
+        );
     } else {
 
         if (document.getElementById("operator-order-list")) {
@@ -209,7 +220,7 @@ async function createOperator() {
             body: JSON.stringify({
                 username,
                 password,
-                role: "operador"
+                role: ROLE_OPERATOR
             })
         }
     );
@@ -405,7 +416,7 @@ window.addEventListener("DOMContentLoaded", () => {
         loadOperators();
     }
 
-    if (document.getElementById("admin-order-list") && role === "operador") {
+    if (document.getElementById("admin-order-list") && role === ROLE_OPERATOR) {
         loadDashboardOrders();
     }
 });

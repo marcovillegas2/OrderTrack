@@ -1,6 +1,9 @@
 venv/
 __pycache__/
+*.pyc
+.idea/
 .pytest_cache/
 .coverage
 htmlcov/
-.idea/
+ordertrack.db
+.sonar/

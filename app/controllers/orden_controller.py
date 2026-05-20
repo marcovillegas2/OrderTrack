@@ -4,11 +4,17 @@ from typing import Annotated
 
 from app.database import SessionLocal
 from app.schemas.orden_schema import OrderCreate, OrderResponse, OrderStatusUpdate
+from app.constants import (
+    ORDER_NOT_FOUND,
+    SAME_STATUS,
+    INVALID_TRANSITION,
+    CANNOT_DELETE_DELIVERED,
+)
 from app.services.orden_service import (
     register_order,
     list_orders,
     change_order_status,
-    remove_order
+    remove_order,
 )
 
 router = APIRouter()
@@ -25,26 +31,14 @@ def get_db():
 
 
 @router.post("/orders/create", response_model=OrderResponse)
-def create_order_endpoint(
-    order: OrderCreate,
-    db: Annotated[Session, Depends(get_db)]
-):
+def create_order_endpoint(order: OrderCreate, db: Annotated[Session, Depends(get_db)]):
     return register_order(
-        db,
-        order.customer_name,
-        order.product_name,
-        order.quantity,
-        order.address
+        db, order.customer_name, order.product_name, order.quantity, order.address
     )
 
 
-@router.get(
-    "/orders",
-    response_model=list[OrderResponse]
-)
-def get_orders_endpoint(
-    db: Annotated[Session, Depends(get_db)]
-):
+@router.get("/orders", response_model=list[OrderResponse])
+def get_orders_endpoint(db: Annotated[Session, Depends(get_db)]):
 
     return list_orders(db)
 
@@ -53,58 +47,34 @@ def get_orders_endpoint(
 def update_order_status_endpoint(
     order_id: int,
     status_data: OrderStatusUpdate,
-    db: Annotated[Session, Depends(get_db)]
+    db: Annotated[Session, Depends(get_db)],
 ):
-    result = change_order_status(
-        db,
-        order_id,
-        status_data.status.value
-    )
+    result = change_order_status(db, order_id, status_data.status.value)
 
     if result == "not_found":
-        raise HTTPException(
-            status_code=404,
-            detail="Pedido no encontrado"
-        )
+        raise HTTPException(status_code=404, detail=ORDER_NOT_FOUND)
 
     if result == "same_status":
-        raise HTTPException(
-            status_code=400,
-            detail="El pedido ya tiene ese estado"
-        )
+        raise HTTPException(status_code=400, detail=SAME_STATUS)
 
     if result == "invalid_transition":
-        raise HTTPException(
-            status_code=400,
-            detail="Transición de estado no permitida"
-        )
+        raise HTTPException(status_code=400, detail=INVALID_TRANSITION)
 
     return {
         "message": "Estado actualizado correctamente",
         "order_id": result.id,
-        "status": result.status
+        "status": result.status,
     }
 
 
 @router.delete("/orders/{order_id}")
-def delete_order_endpoint(
-    order_id: int,
-    db: Annotated[Session, Depends(get_db)]
-):
+def delete_order_endpoint(order_id: int, db: Annotated[Session, Depends(get_db)]):
     result = remove_order(db, order_id)
 
     if result == "not_found":
-        raise HTTPException(
-            status_code=404,
-            detail="Pedido no encontrado"
-        )
+        raise HTTPException(status_code=404, detail=ORDER_NOT_FOUND)
 
     if result == "cannot_delete":
-        raise HTTPException(
-            status_code=400,
-            detail="No se puede eliminar un pedido entregado"
-        )
+        raise HTTPException(status_code=400, detail=CANNOT_DELETE_DELIVERED)
 
-    return {
-        "message": "Pedido eliminado correctamente"
-    }
+    return {"message": "Pedido eliminado correctamente"}

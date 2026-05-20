@@ -24,10 +24,8 @@ app.include_router(user_router)
 app.include_router(product_router)
 app.include_router(order_router)
 
+
 @app.get("/health")
 def health_check():
 
-    return {
-        "status": "ok",
-        "message": "OrderTrack backend funcionando"
-    }
+    return {"status": "ok", "message": "OrderTrack backend funcionando"}

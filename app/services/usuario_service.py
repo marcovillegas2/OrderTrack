@@ -5,8 +5,9 @@ from app.repositories.usuario_repository import (
     get_all_users,
     get_operators,
     get_user_by_id,
-    delete_user
+    delete_user,
 )
+
 
 def register_user(db: Session, username: str, password: str, role: str):
 
@@ -16,6 +17,7 @@ def register_user(db: Session, username: str, password: str, role: str):
         return None
 
     return create_user(db, username, password, role)
+
 
 def login_user(db: Session, username: str, password: str):
 
@@ -29,8 +31,10 @@ def login_user(db: Session, username: str, password: str):
 
     return user
 
+
 def list_users(db: Session):
     return get_all_users(db)
+
 
 def list_operators(db: Session):
 

@@ -1,14 +1,31 @@
 from sqlalchemy.orm import Session
 
+from app.constants import (
+    STATUS_PENDING,
+    STATUS_SENT,
+    STATUS_DELIVERED,
+    STATUS_CANCELLED,
+)
+
 from app.repositories.orden_repository import (
     create_order,
     get_orders,
     get_order_by_id,
     update_order_status,
-    delete_order
+    delete_order,
 )
 
-from app.schemas.orden_schema import OrderStatus
+VALID_TRANSITIONS = {
+    STATUS_PENDING: [
+        STATUS_SENT,
+        STATUS_CANCELLED,
+    ],
+    STATUS_SENT: [
+        STATUS_DELIVERED,
+    ],
+    STATUS_DELIVERED: [],
+    STATUS_CANCELLED: [],
+}
 
 
 def register_order(
@@ -16,26 +33,29 @@ def register_order(
     customer_name: str,
     product_name: str,
     quantity: int,
-    address: str
+    address: str,
 ):
+
     return create_order(
         db,
         customer_name,
         product_name,
         quantity,
-        address
+        address,
     )
 
 
 def list_orders(db: Session):
+
     return get_orders(db)
 
 
 def change_order_status(
     db: Session,
     order_id: int,
-    new_status: str
+    new_status: str,
 ):
+
     order = get_order_by_id(db, order_id)
 
     if not order:
@@ -43,31 +63,34 @@ def change_order_status(
 
     current_status = order.status
 
-    allowed_transitions = {
-        "Pendiente": ["Enviado", "Cancelado"],
-        "Enviado": ["Entregado"],
-        "Entregado": [],
-        "Cancelado": []
-    }
-
     if new_status == current_status:
         return "same_status"
 
-    if new_status not in allowed_transitions.get(current_status, []):
+    allowed_statuses = VALID_TRANSITIONS.get(current_status, [])
+
+    if new_status not in allowed_statuses:
         return "invalid_transition"
 
-    updated_order = update_order_status(db, order, new_status)
-    return updated_order
+    return update_order_status(
+        db,
+        order,
+        new_status,
+    )
 
 
-def remove_order(db: Session, order_id: int):
+def remove_order(
+    db: Session,
+    order_id: int,
+):
+
     order = get_order_by_id(db, order_id)
 
     if not order:
         return "not_found"
 
-    if order.status == "Entregado":
+    if order.status == STATUS_DELIVERED:
         return "cannot_delete"
 
     delete_order(db, order)
+
     return "deleted"

@@ -3,17 +3,13 @@ from app.models.orden import Order
 
 
 def create_order(
-    db: Session,
-    customer_name: str,
-    product_name: str,
-    quantity: int,
-    address: str
+    db: Session, customer_name: str, product_name: str, quantity: int, address: str
 ):
     new_order = Order(
         customer_name=customer_name,
         product_name=product_name,
         quantity=quantity,
-        address=address
+        address=address,
     )
 
     db.add(new_order)
