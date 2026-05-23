@@ -13,6 +13,7 @@ from app.repositories.orden_repository import (
     get_order_by_id,
     update_order_status,
     delete_order,
+    get_orders_stats,
 )
 
 VALID_TRANSITIONS = {
@@ -94,3 +95,8 @@ def remove_order(
     delete_order(db, order)
 
     return "deleted"
+
+
+def get_dashboard_stats(db: Session):
+
+    return get_orders_stats(db)

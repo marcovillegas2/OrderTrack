@@ -10,11 +10,13 @@ from app.constants import (
     INVALID_TRANSITION,
     CANNOT_DELETE_DELIVERED,
 )
+
 from app.services.orden_service import (
     register_order,
     list_orders,
     change_order_status,
     remove_order,
+    get_dashboard_stats,
 )
 
 router = APIRouter()
@@ -78,3 +80,9 @@ def delete_order_endpoint(order_id: int, db: Annotated[Session, Depends(get_db)]
         raise HTTPException(status_code=400, detail=CANNOT_DELETE_DELIVERED)
 
     return {"message": "Pedido eliminado correctamente"}
+
+
+@router.get("/orders/stats")
+def orders_stats(db: Session = Depends(get_db)):
+
+    return get_dashboard_stats(db)

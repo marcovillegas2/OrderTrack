@@ -1,10 +1,11 @@
 const ROLE_ADMIN = "admin";
-const ROLE_OPERATOR = ROLE_OPERATOR;
-
+const ROLE_OPERATOR = "operador";
 const STATUS_PENDING = "Pendiente";
 const STATUS_SENT = "Enviado";
 const STATUS_DELIVERED = "Entregado";
 const STATUS_CANCELLED = "Cancelado";
+let pieChart = null;
+let barChart = null;
 
 async function login() {
 
@@ -138,7 +139,48 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const role = localStorage.getItem("role");
 
+    const username =
+        localStorage.getItem(
+            "username"
+        );
+
+    const currentPage =
+        window.location.pathname;
+
+    const isCatalogPage =
+        currentPage.includes(
+            "catalog.html"
+        );
+
+    if (
+        isCatalogPage &&
+        (!role || !username)
+    ) {
+
+        window.location.href =
+            "login.html";
+
+        return;
+    }
+
     const roleLabel = document.getElementById("user-role");
+    const dashboardTitle = document.getElementById("dashboard-title");
+
+    if (dashboardTitle) {
+
+        if (role === ROLE_ADMIN) {
+
+            dashboardTitle.innerText =
+                "Panel Administrativo";
+        }
+
+        else if (role === ROLE_OPERATOR) {
+
+            dashboardTitle.innerText =
+                "Panel Operador";
+        }
+    }
+
     if (roleLabel) {
         roleLabel.innerText = `Rol: ${role}`;
     }
@@ -159,16 +201,54 @@ document.addEventListener("DOMContentLoaded", () => {
         loadOperators();
     }
 
-    if (role !== "admin") {
+    if (role !== ROLE_ADMIN) {
 
-        const adminUserSection = document.getElementById("admin-user-section");
+        const adminUserSection =
+            document.getElementById(
+                "admin-user-section"
+            );
+
         adminUserSection?.style.setProperty(
             "display",
             "none"
         );
 
-        const productAdminControls = document.getElementById("product-admin-controls");
+        const productAdminControls =
+            document.getElementById(
+                "product-admin-controls"
+            );
+
         productAdminControls?.style.setProperty(
+            "display",
+            "none"
+        );
+
+        const statsSection =
+            document.getElementById(
+                "stats-section"
+            );
+
+        statsSection?.style.setProperty(
+            "display",
+            "none"
+        );
+
+        const chartsSection =
+            document.getElementById(
+                "charts-section"
+            );
+
+        chartsSection?.style.setProperty(
+            "display",
+            "none"
+        );
+
+        const adminMenu =
+            document.getElementById(
+                "admin-menu"
+            );
+
+        adminMenu?.style.setProperty(
             "display",
             "none"
         );
@@ -176,14 +256,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (role !== ROLE_OPERATOR) {
 
-        const operatorOrdersSection = document.getElementById("operator-orders-section");
+        const operatorOrdersSection =
+            document.getElementById(
+                "operator-orders-section"
+            );
+
         operatorOrdersSection?.style.setProperty(
             "display",
             "none"
         );
+
+        if (role === ROLE_ADMIN) {
+            loadDashboardStats();
+            showDashboardSection();
+        }
+
     } else {
 
         if (document.getElementById("operator-order-list")) {
+
             loadDashboardOrders();
         }
     }
@@ -314,6 +405,34 @@ async function createOrder() {
             "order-address"
         ).value;
 
+    const message =
+        document.getElementById(
+            "order-message"
+        );
+
+    if (
+        !customerName.trim() ||
+        !productName.trim() ||
+        !quantity.trim() ||
+        !address.trim()
+    ) {
+
+        message.innerText =
+            "Todos los campos son obligatorios";
+
+        message.className =
+            "error-message";
+
+        return;
+    }
+
+    const button =
+        document.getElementById(
+            "order-button"
+        );
+    button.disabled = true;
+    button.innerText = "Procesando...";
+
     const response = await fetch(
         "http://127.0.0.1:8000/orders/create",
         {
@@ -332,16 +451,14 @@ async function createOrder() {
         }
     );
 
-    const message =
-        document.getElementById(
-            "order-message"
-        );
+    button.disabled = false;
+    button.innerText = "Confirmar pedido";
 
     if (response.ok) {
 
         message.innerText =
             "Pedido enviado correctamente";
-
+        message.className = "success-message";
         message.style.color = "green";
     }
 
@@ -349,7 +466,7 @@ async function createOrder() {
 
         message.innerText =
             "Error al enviar pedido";
-
+        message.className = "error-message";
         message.style.color = "red";
     }
 }
@@ -401,26 +518,6 @@ async function loadPublicProducts() {
     });
 }
 
-window.addEventListener("DOMContentLoaded", () => {
-    const role = localStorage.getItem("role");
-
-    if (document.getElementById("product-order-name")) {
-        loadPublicProducts();
-    }
-
-    if (document.getElementById("product-list")) {
-        loadProducts();
-    }
-
-    if (document.getElementById("operator-list")) {
-        loadOperators();
-    }
-
-    if (document.getElementById("admin-order-list") && role === ROLE_OPERATOR) {
-        loadDashboardOrders();
-    }
-});
-
 async function loadDashboardOrders() {
 
     const response = await fetch(
@@ -436,8 +533,8 @@ async function loadDashboardOrders() {
     list.innerHTML = "";
 
     const activeOrders = orders.filter(order =>
-        order.status === "Pendiente" ||
-        order.status === "Enviado"
+        order.status === STATUS_PENDING ||
+        order.status === STATUS_SENT
     );
 
     if (activeOrders.length === 0) {
@@ -454,25 +551,25 @@ async function loadDashboardOrders() {
 
         const actions = [];
 
-        if (order.status === "Pendiente") {
+        if (order.status === STATUS_PENDING) {
 
             actions.push(`
-                <button class="status-btn" onclick="changeOrderStatus(${order.id}, 'Enviado')">
+                <button class="status-btn" onclick="changeOrderStatus(${order.id}, STATUS_SENT)">
                     Enviado
                 </button>
             `);
 
             actions.push(`
-                <button class="status-btn" onclick="changeOrderStatus(${order.id}, 'Cancelado')">
+                <button class="status-btn" onclick="changeOrderStatus(${order.id}, STATUS_CANCELLED)">
                     Cancelar
                 </button>
             `);
         }
 
-        if (order.status === "Enviado") {
+        if (order.status === STATUS_SENT) {
 
             actions.push(`
-                <button class="status-btn" onclick="changeOrderStatus(${order.id}, 'Entregado')">
+                <button class="status-btn" onclick="changeOrderStatus(${order.id}, STATUS_DELIVERED)">
                     Entregado
                 </button>
             `);
@@ -484,7 +581,14 @@ async function loadDashboardOrders() {
                 <strong>Producto:</strong> ${order.product_name}
                 <strong>Cantidad:</strong> ${order.quantity}
                 <strong>Dirección:</strong> ${order.address}
-                <strong>Estado:</strong> ${order.status}
+                <strong>Estado:</strong>
+
+                <span class="
+                    order-status
+                    ${getStatusClass(order.status)}
+                ">
+                    ${order.status}
+                </span>
             </div>
 
             <div class="order-actions">
@@ -509,6 +613,7 @@ async function changeOrderStatus(orderId, status) {
 
     if (response.ok) {
         loadDashboardOrders();
+        loadDashboardStats();
     } else {
         const data = await response.json();
         alert(data.detail || "No se pudo cambiar el estado");
@@ -534,10 +639,225 @@ async function loadPublicCatalog() {
         const item = document.createElement("li");
 
         item.innerHTML = `
-            <span><strong>${product.name}</strong></span>
-            <span>S/. ${product.price}</span>
+
+            <div>
+
+                <strong>
+                    ${product.name}
+                </strong>
+
+                <p>
+                    Delicioso producto
+                    disponible para delivery
+                </p>
+
+            </div>
+
+            <div>
+
+                <strong>
+                    S/. ${product.price}
+                </strong>
+
+            </div>
         `;
 
         list.appendChild(item);
     });
+}
+
+async function loadDashboardStats() {
+
+    try {
+
+        const response = await fetch(
+            "http://127.0.0.1:8000/orders/stats"
+        );
+
+        const stats = await response.json();
+
+        document.getElementById(
+            "total-orders"
+        ).textContent = stats.total;
+
+        document.getElementById(
+            "pending-orders"
+        ).textContent = stats.pending;
+
+        document.getElementById(
+            "sent-orders"
+        ).textContent = stats.sent;
+
+        document.getElementById(
+            "delivered-orders"
+        ).textContent = stats.delivered;
+
+        document.getElementById(
+            "cancelled-orders"
+        ).textContent = stats.cancelled;
+
+        renderCharts(stats);
+
+    } catch (error) {
+
+        console.error(
+            "Error cargando estadísticas:",
+            error
+        );
+    }
+}
+
+function renderCharts(stats) {
+
+    const pieCtx =
+        document.getElementById(
+            "ordersPieChart"
+        );
+
+    const barCtx =
+        document.getElementById(
+            "ordersBarChart"
+        );
+
+    if (!pieCtx || !barCtx) return;
+
+    if (pieChart) {
+        pieChart.destroy();
+    }
+
+    if (barChart) {
+        barChart.destroy();
+    }
+
+    pieChart = new Chart(pieCtx, {
+
+        type: "pie",
+
+        data: {
+
+            labels: [
+                "Pendientes",
+                "Enviados",
+                "Entregados",
+                "Cancelados"
+            ],
+
+            datasets: [{
+                data: [
+                    stats.pending,
+                    stats.sent,
+                    stats.delivered,
+                    stats.cancelled
+                ],
+
+                backgroundColor: [
+                    "#FFFB1F",
+                    "#FF8B1F",
+                    "#4CAF50",
+                    "#FF1F23"
+                ]
+            }]
+        }
+    });
+
+    barChart = new Chart(barCtx, {
+
+        type: "bar",
+
+        data: {
+
+            labels: [
+                "Pendientes",
+                "Enviados",
+                "Entregados",
+                "Cancelados"
+            ],
+
+            datasets: [{
+
+                label: "Pedidos",
+
+                data: [
+                    stats.pending,
+                    stats.sent,
+                    stats.delivered,
+                    stats.cancelled
+                ],
+
+                backgroundColor: [
+                    "#FFFB1F",
+                    "#FF8B1F",
+                    "#4CAF50",
+                    "#FF1F23"
+                ]
+            }]
+        },
+
+        options: {
+
+            responsive: true,
+
+            scales: {
+
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+function showDashboardSection() {
+
+    const dashboard =
+        document.getElementById(
+            "dashboard-section"
+        );
+
+    const management =
+        document.getElementById(
+            "management-section"
+        );
+
+    dashboard.style.display = "block";
+
+    management.style.display = "none";
+}
+
+function showManagementSection() {
+
+    const dashboard =
+        document.getElementById(
+            "dashboard-section"
+        );
+
+    const management =
+        document.getElementById(
+            "management-section"
+        );
+
+    dashboard.style.display = "none";
+
+    management.style.display = "block";
+}
+
+function getStatusClass(status) {
+
+    switch (status) {
+
+        case STATUS_PENDING:
+            return "status-pending";
+
+        case STATUS_SENT:
+            return "status-sent";
+
+        case STATUS_DELIVERED:
+            return "status-delivered";
+
+        case STATUS_CANCELLED:
+            return "status-cancelled";
+
+        default:
+            return "";
+    }
 }

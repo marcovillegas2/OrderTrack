@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <title>OrderTrack Dashboard</title>
-
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -15,6 +14,24 @@
     <div class="logo">
         OrderTrack
     </div>
+
+    <nav class="admin-menu" id="admin-menu">
+
+        <button
+            class="menu-btn"
+            onclick="showDashboardSection()">
+
+            Dashboard
+        </button>
+
+        <button
+            class="menu-btn"
+            onclick="showManagementSection()">
+
+            Administración
+        </button>
+
+    </nav>
 
     <div class="user-info">
 
@@ -31,54 +48,106 @@
 <main class="dashboard">
 
     <h1 id="dashboard-title">
-        Dashboard
+        Panel Administrativo
     </h1>
 
-    <!-- PANEL OPERADORES -->
-    <section id="admin-user-section"
-             class="admin-panel">
+    <div id="dashboard-section">
+        <section class="stats-section" id="stats-section">
 
-        <h2>Operadores registrados</h2>
+            <div class="stat-card">
+                <h3>Total pedidos</h3>
+                <p id="total-orders">0</p>
+            </div>
 
-        <input type="text"
-               id="operator-username"
-               placeholder="Usuario operador">
+            <div class="stat-card">
+                <h3>Pendientes</h3>
+                <p id="pending-orders">0</p>
+            </div>
 
-        <input type="password"
-               id="operator-password"
-               placeholder="Contraseña">
+            <div class="stat-card">
+                <h3>Enviados</h3>
+                <p id="sent-orders">0</p>
+            </div>
 
-        <button onclick="createOperator()">
-            Crear operador
-        </button>
+            <div class="stat-card">
+                <h3>Entregados</h3>
+                <p id="delivered-orders">0</p>
+            </div>
 
-        <ul id="operator-list"></ul>
+            <div class="stat-card">
+                <h3>Cancelados</h3>
+                <p id="cancelled-orders">0</p>
+            </div>
 
-    </section>
+        </section>
 
-    <!-- PANEL PRODUCTOS -->
-    <section id="admin-product-section"
-             class="admin-panel">
+        <section class="charts-section" id="charts-section">
 
-        <h2>Catálogo de productos</h2>
+            <div class="chart-card">
 
-        <div id="product-admin-controls">
+                <h3>Pedidos por estado</h3>
+
+                <canvas id="ordersPieChart"></canvas>
+
+            </div>
+
+            <div class="chart-card">
+
+                <h3>Resumen general</h3>
+
+                <canvas id="ordersBarChart"></canvas>
+
+            </div>
+
+        </section>
+    </div>
+
+    <div id="management-section">
+        <!-- PANEL OPERADORES -->
+        <section id="admin-user-section" class="admin-panel">
+
+            <h2>Operadores registrados</h2>
+
             <input type="text"
-                   id="product-name"
-                   placeholder="Nombre producto">
+                   id="operator-username"
+                   placeholder="Usuario operador">
 
-            <input type="number"
-                   id="product-price"
-                   placeholder="Precio">
+            <input type="password"
+                   id="operator-password"
+                   placeholder="Contraseña">
 
-            <button onclick="createProduct()">
-                Crear producto
+            <button onclick="createOperator()">
+                Crear operador
             </button>
-        </div>
 
-        <ul id="product-list"></ul>
+            <ul id="operator-list"></ul>
 
-    </section>
+        </section>
+
+        <!-- PANEL PRODUCTOS -->
+        <section id="admin-product-section"
+                 class="admin-panel">
+
+            <h2>Catálogo de productos</h2>
+
+            <div id="product-admin-controls">
+                <input type="text"
+                       id="product-name"
+                       placeholder="Nombre producto">
+
+                <input type="number"
+                       id="product-price"
+                       placeholder="Precio">
+
+                <button onclick="createProduct()">
+                    Crear producto
+                </button>
+            </div>
+
+            <ul id="product-list"></ul>
+
+        </section>
+    </div>
 
     <section id="operator-orders-section" class="admin-panel">
         <h2>Pedidos asignados</h2>
@@ -86,6 +155,8 @@
     </section>
 
 </main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script src="app.js"></script>
 

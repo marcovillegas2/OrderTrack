@@ -8,42 +8,127 @@
 <body>
 
 <header class="public-navbar">
-    <div class="logo">OrderTrack</div>
-    <div class="public-subtitle">Delivery rápido de comida</div>
+
+    <div class="logo-area">
+
+        <h1 class="logo-title">
+            OrderTrack
+        </h1>
+
+        <p class="logo-subtitle">
+            Delivery rápido y seguro
+        </p>
+
+    </div>
+
 </header>
+
+<section class="hero-section">
+
+    <div class="hero-content">
+
+        <h2>
+            Tus comidas favoritas,
+            directo a casa
+        </h2>
+
+        <p>
+            Realiza pedidos rápidos,
+            seguros y fáciles desde
+            cualquier lugar.
+        </p>
+
+    </div>
+
+</section>
 
 <main class="public-container">
 
     <section class="catalog-public-section">
-        <h2>Catálogo disponible</h2>
+
+        <div class="section-header">
+
+            <h2>Catálogo disponible</h2>
+
+            <span class="catalog-badge">
+                Delivery
+            </span>
+
+        </div>
+
         <ul id="public-product-list"></ul>
+
     </section>
 
     <section class="order-form-section">
+
         <h2>Realizar pedido</h2>
 
-        <input type="text" id="customer-name" placeholder="Tu nombre">
+        <p class="form-description">
+            Completa tus datos para
+            confirmar tu pedido.
+        </p>
+
+        <input
+            type="text"
+            id="customer-name"
+            placeholder="Tu nombre">
 
         <select id="product-order-name"></select>
 
-        <input type="number" id="order-quantity" placeholder="Cantidad">
+        <input
+            type="number"
+            id="order-quantity"
+            placeholder="Cantidad">
 
-        <input type="text" id="order-address" placeholder="Dirección de entrega">
+        <input
+            type="text"
+            id="order-address"
+            placeholder="Dirección de entrega">
 
         <div class="payment-box">
-            <h3>Pago con Yape</h3>
-            <p>Simulación de pago antes de confirmar el pedido</p>
-            <div class="fake-qr">QR YAPE</div>
-            <small>Interfaz de demostración</small>
+
+            <div class="payment-header">
+
+                <h3>Pago con Yape</h3>
+
+                <span class="payment-badge">
+                    Simulación
+                </span>
+
+            </div>
+
+            <p>
+                Escanea el código QR para
+                simular el pago antes
+                de confirmar tu pedido.
+            </p>
+
+            <div class="fake-qr">
+
+                <div class="qr-inner">
+                    QR
+                </div>
+
+            </div>
+
         </div>
 
-        <button onclick="createOrder()">Confirmar pedido</button>
+        <button
+            id="order-button"
+            onclick="createOrder()">
+
+            Confirmar pedido
+
+        </button>
 
         <p id="order-message"></p>
+
     </section>
 
 </main>
 
 <script src="app.js"></script>
+
 </body>
 </html>
