@@ -1,11 +1,12 @@
-from fastapi.testclient import TestClient
-
-from app.main import app
-
-client = TestClient(app)
+from app.tests.test_setup import (
+    client,
+    cleanup_test_data
+)
 
 
 def test_get_orders_stats():
+
+    cleanup_test_data()
 
     response = client.get(
         "/orders/stats"
@@ -21,12 +22,17 @@ def test_get_orders_stats():
     assert "delivered" in data
     assert "cancelled" in data
 
+    cleanup_test_data()
+
+
 def test_create_order():
+
+    cleanup_test_data()
 
     response = client.post(
         "/orders/create",
         json={
-            "customer_name": "Carlos",
+            "customer_name": "test_carlos",
             "product_name": "Pizza",
             "quantity": 2,
             "address": "Av Lima 123"
@@ -35,12 +41,17 @@ def test_create_order():
 
     assert response.status_code == 200
 
+    cleanup_test_data()
+
+
 def test_valid_status_transition():
+
+    cleanup_test_data()
 
     create_response = client.post(
         "/orders/create",
         json={
-            "customer_name": "Ana",
+            "customer_name": "test_ana",
             "product_name": "Hamburguesa",
             "quantity": 1,
             "address": "Calle Norte"
@@ -58,12 +69,17 @@ def test_valid_status_transition():
 
     assert response.status_code == 200
 
+    cleanup_test_data()
+
+
 def test_invalid_status_transition():
+
+    cleanup_test_data()
 
     create_response = client.post(
         "/orders/create",
         json={
-            "customer_name": "Luis",
+            "customer_name": "test_luis",
             "product_name": "Pollo",
             "quantity": 1,
             "address": "Av Peru"
@@ -88,12 +104,17 @@ def test_invalid_status_transition():
 
     assert response.status_code == 400
 
+    cleanup_test_data()
+
+
 def test_delete_delivered_order_blocked():
+
+    cleanup_test_data()
 
     create_response = client.post(
         "/orders/create",
         json={
-            "customer_name": "Mario",
+            "customer_name": "test_mario",
             "product_name": "Salchipapa",
             "quantity": 1,
             "address": "Av Central"
@@ -122,3 +143,4 @@ def test_delete_delivered_order_blocked():
 
     assert response.status_code == 400
 
+    cleanup_test_data()

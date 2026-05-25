@@ -1,33 +1,53 @@
-import uuid
+from app.tests.test_setup import (
+    client,
+    cleanup_test_data
+)
 
-from app.tests.test_setup import client
-
+TEST_PASSWORD = "safe_test_password"
 
 def test_create_user():
 
-    unique_username = f"user_{uuid.uuid4().hex[:8]}"
+    cleanup_test_data()
 
     response = client.post(
         "/users/create",
-        json={"username": unique_username, "password": "1234", "role": "operador"},
+        json={
+            "username": "test_operator_user",
+            "password": TEST_PASSWORD,
+            "role": "operador"
+        },
     )
 
     assert response.status_code == 200
 
+    cleanup_test_data()
+
 
 def test_login():
 
-    username = f"user_{uuid.uuid4().hex[:8]}"
+    cleanup_test_data()
 
     client.post(
         "/users/create",
-        json={"username": username, "password": "1234", "role": "operador"},
+        json={
+            "username": "test_operator_user",
+            "password": TEST_PASSWORD,
+            "role": "operador"
+        },
     )
 
-    response = client.post("/login", json={"username": username, "password": "1234"})
+    response = client.post(
+        "/login",
+        json={
+            "username": "test_operator_user",
+            "password": TEST_PASSWORD
+        }
+    )
 
     assert response.status_code == 200
 
     data = response.json()
 
     assert data["role"] == "operador"
+
+    cleanup_test_data()

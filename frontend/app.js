@@ -135,36 +135,17 @@ async function createProduct() {
     loadProducts();
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+function setupDashboard(role) {
 
-    const role = localStorage.getItem("role");
-
-    const username =
-        localStorage.getItem(
-            "username"
+    const roleLabel =
+        document.getElementById(
+            "user-role"
         );
 
-    const currentPage =
-        window.location.pathname;
-
-    const isCatalogPage =
-        currentPage.includes(
-            "catalog.html"
+    const dashboardTitle =
+        document.getElementById(
+            "dashboard-title"
         );
-
-    if (
-        isCatalogPage &&
-        (!role || !username)
-    ) {
-
-        window.location.href =
-            "login.html";
-
-        return;
-    }
-
-    const roleLabel = document.getElementById("user-role");
-    const dashboardTitle = document.getElementById("dashboard-title");
 
     if (dashboardTitle) {
 
@@ -182,103 +163,144 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (roleLabel) {
-        roleLabel.innerText = `Rol: ${role}`;
-    }
 
-    if (document.getElementById("public-product-list")) {
+        roleLabel.innerText =
+            `Rol: ${role}`;
+    }
+}
+
+function loadInitialData() {
+
+    if (
+        document.getElementById(
+            "public-product-list"
+        )
+    ) {
+
         loadPublicCatalog();
     }
 
-    if (document.getElementById("product-order-name")) {
+    if (
+        document.getElementById(
+            "product-order-name"
+        )
+    ) {
+
         loadPublicProducts();
     }
 
-    if (document.getElementById("product-list")) {
+    if (
+        document.getElementById(
+            "product-list"
+        )
+    ) {
+
         loadProducts();
     }
 
-    if (document.getElementById("operator-list")) {
+    if (
+        document.getElementById(
+            "operator-list"
+        )
+    ) {
+
         loadOperators();
     }
+}
+
+function setupAdminSections(role) {
 
     if (role !== ROLE_ADMIN) {
 
-        const adminUserSection =
-            document.getElementById(
-                "admin-user-section"
-            );
+        hideElement("admin-user-section");
+        hideElement("product-admin-controls");
+        hideElement("stats-section");
+        hideElement("charts-section");
+        hideElement("admin-menu");
 
-        adminUserSection?.style.setProperty(
-            "display",
-            "none"
-        );
-
-        const productAdminControls =
-            document.getElementById(
-                "product-admin-controls"
-            );
-
-        productAdminControls?.style.setProperty(
-            "display",
-            "none"
-        );
-
-        const statsSection =
-            document.getElementById(
-                "stats-section"
-            );
-
-        statsSection?.style.setProperty(
-            "display",
-            "none"
-        );
-
-        const chartsSection =
-            document.getElementById(
-                "charts-section"
-            );
-
-        chartsSection?.style.setProperty(
-            "display",
-            "none"
-        );
-
-        const adminMenu =
-            document.getElementById(
-                "admin-menu"
-            );
-
-        adminMenu?.style.setProperty(
-            "display",
-            "none"
-        );
+        return;
     }
+
+    loadDashboardStats();
+    showDashboardSection();
+}
+
+function hideElement(elementId) {
+
+    const element =
+        document.getElementById(
+            elementId
+        );
+
+    element?.style.setProperty(
+        "display",
+        "none"
+    );
+}
+
+function setupOperatorSection(role) {
 
     if (role !== ROLE_OPERATOR) {
 
-        const operatorOrdersSection =
-            document.getElementById(
-                "operator-orders-section"
-            );
-
-        operatorOrdersSection?.style.setProperty(
-            "display",
-            "none"
+        hideElement(
+            "operator-orders-section"
         );
 
-        if (role === ROLE_ADMIN) {
-            loadDashboardStats();
-            showDashboardSection();
-        }
-
-    } else {
-
-        if (document.getElementById("operator-order-list")) {
-
-            loadDashboardOrders();
-        }
+        return;
     }
-});
+
+    if (
+        document.getElementById(
+            "operator-order-list"
+        )
+    ) {
+
+        loadDashboardOrders();
+    }
+}
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        const role =
+            localStorage.getItem(
+                "role"
+            );
+
+        const username =
+            localStorage.getItem(
+                "username"
+            );
+
+        const currentPage =
+            window.location.pathname;
+
+        const isCatalogPage =
+            currentPage.includes(
+                "catalog.html"
+            );
+
+        if (
+            isCatalogPage &&
+            (!role || !username)
+        ) {
+
+            window.location.href =
+                "login.html";
+
+            return;
+        }
+
+        setupDashboard(role);
+
+        loadInitialData();
+
+        setupAdminSections(role);
+
+        setupOperatorSection(role);
+    }
+);
 
 function logout() {
 
@@ -445,7 +467,7 @@ async function createOrder() {
             body: JSON.stringify({
                 customer_name: customerName,
                 product_name: productName,
-                quantity: parseInt(quantity),
+                quantity: Number.parseInt(quantity, 10),
                 address: address
             })
         }
@@ -460,16 +482,13 @@ async function createOrder() {
             "Pedido enviado correctamente";
         message.className = "success-message";
         message.style.color = "green";
-    }
-
-    else {
-
-        message.innerText =
-            "Error al enviar pedido";
+    } else {
+        message.innerText = "Error al enviar pedido";
         message.className = "error-message";
         message.style.color = "red";
     }
 }
+
 
 async function loadOrders() {
 
@@ -518,6 +537,97 @@ async function loadPublicProducts() {
     });
 }
 
+function buildOrderActions(order) {
+
+    const actions = [];
+
+    if (order.status === STATUS_PENDING) {
+
+        actions.push(`
+            <button
+                class="status-btn"
+                onclick="changeOrderStatus(${order.id}, STATUS_SENT)">
+
+                Enviado
+            </button>
+        `);
+
+        actions.push(`
+            <button
+                class="status-btn"
+                onclick="changeOrderStatus(${order.id}, STATUS_CANCELLED)">
+
+                Cancelar
+            </button>
+        `);
+    }
+
+    if (order.status === STATUS_SENT) {
+
+        actions.push(`
+            <button
+                class="status-btn"
+                onclick="changeOrderStatus(${order.id}, STATUS_DELIVERED)">
+
+                Entregado
+            </button>
+        `);
+    }
+
+    return actions.join("");
+}
+
+function renderOrderItem(order) {
+
+    const actions =
+        buildOrderActions(order);
+
+    return `
+        <div class="order-info">
+
+            <strong>
+                Cliente:
+            </strong>
+
+            ${order.customer_name}
+
+            <strong>
+                Producto:
+            </strong>
+
+            ${order.product_name}
+
+            <strong>
+                Cantidad:
+            </strong>
+
+            ${order.quantity}
+
+            <strong>
+                Dirección:
+            </strong>
+
+            ${order.address}
+
+            <strong>
+                Estado:
+            </strong>
+
+            <span class="
+                order-status
+                ${getStatusClass(order.status)}
+            ">
+                ${order.status}
+            </span>
+
+        </div>
+
+        <div class="order-actions">
+            ${actions}
+        </div>
+    `;
+}
+
 async function loadDashboardOrders() {
 
     const response = await fetch(
@@ -526,7 +636,10 @@ async function loadDashboardOrders() {
 
     const orders = await response.json();
 
-    const list = document.getElementById("operator-order-list");
+    const list =
+        document.getElementById(
+            "operator-order-list"
+        );
 
     if (!list) return;
 
@@ -542,59 +655,17 @@ async function loadDashboardOrders() {
         list.innerHTML = `
             <p>No hay pedidos activos</p>
         `;
+
         return;
     }
 
     activeOrders.forEach(order => {
 
-        const item = document.createElement("li");
+        const item =
+            document.createElement("li");
 
-        const actions = [];
-
-        if (order.status === STATUS_PENDING) {
-
-            actions.push(`
-                <button class="status-btn" onclick="changeOrderStatus(${order.id}, STATUS_SENT)">
-                    Enviado
-                </button>
-            `);
-
-            actions.push(`
-                <button class="status-btn" onclick="changeOrderStatus(${order.id}, STATUS_CANCELLED)">
-                    Cancelar
-                </button>
-            `);
-        }
-
-        if (order.status === STATUS_SENT) {
-
-            actions.push(`
-                <button class="status-btn" onclick="changeOrderStatus(${order.id}, STATUS_DELIVERED)">
-                    Entregado
-                </button>
-            `);
-        }
-
-        item.innerHTML = `
-            <div class="order-info">
-                <strong>Cliente:</strong> ${order.customer_name}
-                <strong>Producto:</strong> ${order.product_name}
-                <strong>Cantidad:</strong> ${order.quantity}
-                <strong>Dirección:</strong> ${order.address}
-                <strong>Estado:</strong>
-
-                <span class="
-                    order-status
-                    ${getStatusClass(order.status)}
-                ">
-                    ${order.status}
-                </span>
-            </div>
-
-            <div class="order-actions">
-                ${actions.join("")}
-            </div>
-        `;
+        item.innerHTML =
+            renderOrderItem(order);
 
         list.appendChild(item);
     });

@@ -61,7 +61,14 @@ def get_operators(db: Annotated[Session, Depends(get_db)]):
     return list_operators(db)
 
 
-@router.delete("/operators/{user_id}")
+@router.delete(
+    "/operators/{user_id}",
+    responses={
+        403: {"description": "No se puede eliminar admin"},
+        404: {"description": "Usuario no encontrado"},
+    },
+)
+
 def delete_operator(user_id: int, db: Annotated[Session, Depends(get_db)]):
 
     result = remove_operator(db, user_id)
