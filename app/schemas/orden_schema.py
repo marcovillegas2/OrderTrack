@@ -1,5 +1,5 @@
 from enum import Enum
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime
 
 
@@ -9,12 +9,11 @@ class OrderStatus(str, Enum):
     ENTREGADO = "Entregado"
     CANCELADO = "Cancelado"
 
-
 class OrderCreate(BaseModel):
     customer_name: str
     product_name: str
-    quantity: int
-    address: str
+    quantity: int = Field(gt=0)
+    address: str = Field(min_length=3)
 
 
 class OrderStatusUpdate(BaseModel):

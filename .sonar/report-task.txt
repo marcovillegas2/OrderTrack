@@ -1,6 +1,0 @@
-projectKey=OrderTrack
-serverUrl=http://localhost:9000
-serverVersion=26.4.0.121862
-dashboardUrl=http://localhost:9000/dashboard?id=OrderTrack
-ceTaskId=1f542b49-e61f-48e3-a0eb-611729e2b553
-ceTaskUrl=http://localhost:9000/api/ce/task?id=1f542b49-e61f-48e3-a0eb-611729e2b553
