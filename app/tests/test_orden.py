@@ -122,3 +122,73 @@ def test_delete_delivered_order_blocked():
 
     assert response.status_code == 400
 
+def test_create_order_with_zero_quantity():
+
+    response = client.post(
+        "/orders/create",
+        json={
+            "customer_name": "Carlos",
+            "product_name": "Pizza",
+            "quantity": 0,
+            "address": "Av Lima"
+        }
+    )
+
+    assert response.status_code == 422
+
+def test_create_order_with_valid_quantity():
+
+    response = client.post(
+        "/orders/create",
+        json={
+            "customer_name": "Mario",
+            "product_name": "Hamburguesa",
+            "quantity": 2,
+            "address": "Av Perú"
+        }
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert data["quantity"] == 2
+
+def test_search_orders_by_customer_name():
+
+    client.post(
+        "/orders/create",
+        json={
+            "customer_name": "Andrea",
+            "product_name": "Pizza",
+            "quantity": 1,
+            "address": "Av Norte"
+        }
+    )
+
+    response = client.get("/orders")
+
+    data = response.json()
+
+    matching_orders = [
+        order
+        for order in data
+        if "Andrea" in order["customer_name"]
+    ]
+
+    assert len(matching_orders) > 0
+
+def test_orders_stats_percentages():
+
+    response = client.get(
+        "/orders/stats"
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert "pending_percentage" in data
+    assert "sent_percentage" in data
+    assert "delivered_percentage" in data
+    assert "cancelled_percentage" in data
