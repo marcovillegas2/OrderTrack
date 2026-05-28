@@ -45,7 +45,13 @@ def get_orders_endpoint(db: Annotated[Session, Depends(get_db)]):
     return list_orders(db)
 
 
-@router.put("/orders/{order_id}/status")
+@router.put("/orders/{order_id}/status",
+    responses={
+        400: {"description": "Transición inválida"},
+        404: {"description": "Pedido no encontrado"},
+    },
+)
+
 def update_order_status_endpoint(
     order_id: int,
     status_data: OrderStatusUpdate,
@@ -69,7 +75,14 @@ def update_order_status_endpoint(
     }
 
 
-@router.delete("/orders/{order_id}")
+@router.delete(
+    "/orders/{order_id}",
+    responses={
+        400: {"description": "No se puede eliminar pedido entregado"},
+        404: {"description": "Pedido no encontrado"},
+    },
+)
+
 def delete_order_endpoint(order_id: int, db: Annotated[Session, Depends(get_db)]):
     result = remove_order(db, order_id)
 

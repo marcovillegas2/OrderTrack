@@ -42,7 +42,13 @@ def get_products(db: Annotated[Session, Depends(get_db)]):
     return list_products(db)
 
 
-@router.delete("/products/{product_id}")
+@router.delete(
+    "/products/{product_id}",
+    responses={
+        404: {"description": "Producto no encontrado"},
+    },
+)
+
 def delete_product_endpoint(product_id: int, db: Annotated[Session, Depends(get_db)]):
 
     result = remove_product(db, product_id)
