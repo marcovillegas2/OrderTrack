@@ -1,3 +1,4 @@
+from typing import Union
 from sqlalchemy.orm import Session
 from app.models.orden import Order
 
@@ -32,7 +33,7 @@ def get_orders_stats(db):
 
     orders = get_orders(db)
 
-    stats = {
+    stats: dict[str, Union[int, float]] = {
         "total": len(orders),
 
         "pending": 0,
@@ -57,6 +58,40 @@ def get_orders_stats(db):
 
         elif order.status == STATUS_CANCELLED:
             stats["cancelled"] += 1
+
+    total = stats["total"]
+
+    if total > 0:
+
+        stats["pending_percentage"] = round(
+            (stats["pending"] / total) * 100,
+            2
+        )
+
+        stats["sent_percentage"] = round(
+            (stats["sent"] / total) * 100,
+            2
+        )
+
+        stats["delivered_percentage"] = round(
+            (stats["delivered"] / total) * 100,
+            2
+        )
+
+        stats["cancelled_percentage"] = round(
+            (stats["cancelled"] / total) * 100,
+            2
+        )
+
+    else:
+
+        stats["pending_percentage"] = 0
+
+        stats["sent_percentage"] = 0
+
+        stats["delivered_percentage"] = 0
+
+        stats["cancelled_percentage"] = 0
 
     return stats
 
