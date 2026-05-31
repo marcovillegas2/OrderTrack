@@ -10,8 +10,7 @@ function initializeApplication() {
             "username"
         );
 
-    const currentPage =
-        window.location.pathname;
+    const currentPage = globalThis.location.pathname;
 
     const isCatalogPage =
         currentPage.includes(
@@ -23,7 +22,7 @@ function initializeApplication() {
         (!role || !username)
     ) {
 
-        window.location.href =
+        globalThis.location.href =
             "login.html";
 
         return;

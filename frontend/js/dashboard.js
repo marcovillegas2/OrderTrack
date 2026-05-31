@@ -1,3 +1,6 @@
+let pieChart = null;
+let barChart = null;
+
 async function loadDashboardStats() {
 
     try {
@@ -64,19 +67,10 @@ async function loadDashboardStats() {
 
 function renderCharts(stats) {
 
-    const pieCtx =
-        getElement(
-            "ordersPieChart"
-        );
+    const pieCtx = document.getElementById("ordersPieChart");
+    const barCtx = document.getElementById("ordersBarChart");
 
-    const barCtx =
-        getElement(
-            "ordersBarChart"
-        );
-
-    if (!pieCtx || !barCtx) {
-        return;
-    }
+    if (!pieCtx || !barCtx) return;
 
     if (pieChart) {
         pieChart.destroy();
@@ -87,80 +81,23 @@ function renderCharts(stats) {
     }
 
     pieChart = new Chart(pieCtx, {
-
         type: "pie",
-
         data: {
-
-            labels: [
-                "Pendientes",
-                "Enviados",
-                "Entregados",
-                "Cancelados"
-            ],
-
+            labels: ["Pendientes", "Enviados", "Entregados", "Cancelados"],
             datasets: [{
-
-                data: [
-                    stats.pending,
-                    stats.sent,
-                    stats.delivered,
-                    stats.cancelled
-                ],
-
-                backgroundColor: [
-                    "#FFFB1F",
-                    "#FF8B1F",
-                    "#4CAF50",
-                    "#FF1F23"
-                ]
+                data: [stats.pending, stats.sent, stats.delivered, stats.cancelled],
             }]
         }
     });
 
     barChart = new Chart(barCtx, {
-
         type: "bar",
-
         data: {
-
-            labels: [
-                "Pendientes",
-                "Enviados",
-                "Entregados",
-                "Cancelados"
-            ],
-
+            labels: ["Pendientes", "Enviados", "Entregados", "Cancelados"],
             datasets: [{
-
                 label: "Pedidos",
-
-                data: [
-                    stats.pending,
-                    stats.sent,
-                    stats.delivered,
-                    stats.cancelled
-                ],
-
-                backgroundColor: [
-                    "#FFFB1F",
-                    "#FF8B1F",
-                    "#4CAF50",
-                    "#FF1F23"
-                ]
+                data: [stats.pending, stats.sent, stats.delivered, stats.cancelled],
             }]
-        },
-
-        options: {
-
-            responsive: true,
-
-            scales: {
-
-                y: {
-                    beginAtZero: true
-                }
-            }
         }
     });
 }

@@ -96,6 +96,5 @@ def delete_order_endpoint(order_id: int, db: Annotated[Session, Depends(get_db)]
 
 
 @router.get("/orders/stats")
-def orders_stats(db: Session = Depends(get_db)):
-
+def orders_stats(db: Annotated[Session, Depends(get_db)]):
     return get_dashboard_stats(db)

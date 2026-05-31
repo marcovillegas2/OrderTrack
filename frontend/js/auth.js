@@ -36,7 +36,7 @@ async function login() {
             data.role
         );
 
-        window.location.href =
+        globalThis.location.href =
             "catalog.html";
 
     } else {
@@ -51,6 +51,6 @@ function logout() {
 
     localStorage.clear();
 
-    window.location.href =
+    globalThis.location.href =
         "login.html";
 }

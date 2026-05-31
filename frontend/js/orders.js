@@ -63,7 +63,7 @@ async function createOrder() {
             body: JSON.stringify({
                 customer_name: customerName,
                 product_name: productName,
-                quantity: parseInt(quantity),
+                quantity: Number.parseInt(quantity, 10),
                 address: address
             })
         }
@@ -150,31 +150,28 @@ function buildOrderActions(order) {
 
     if (order.status === STATUS_PENDING) {
 
-        actions.push(`
-            <button
-                class="status-btn"
-                onclick="changeOrderStatus(
-                    ${order.id},
-                    STATUS_SENT
-                )">
-
-                Enviado
-
-            </button>
-        `);
-
-        actions.push(`
-            <button
-                class="status-btn"
-                onclick="changeOrderStatus(
-                    ${order.id},
-                    STATUS_CANCELLED
-                )">
-
-                Cancelar
-
-            </button>
-        `);
+        actions.push(
+        `
+        <button
+            class="status-btn"
+            onclick="changeOrderStatus(
+                ${order.id},
+                STATUS_SENT
+            )">
+            Enviado
+        </button>
+        `,
+        `
+        <button
+            class="status-btn"
+            onclick="changeOrderStatus(
+                ${order.id},
+                STATUS_CANCELLED
+            )">
+            Cancelar
+        </button>
+        `
+        );
     }
 
     if (order.status === STATUS_SENT) {

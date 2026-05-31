@@ -10,10 +10,6 @@ const STATUS_DELIVERED = "Entregado";
 
 const STATUS_CANCELLED = "Cancelado";
 
-let pieChart = null;
-
-let barChart = null;
-
 function getElement(id) {
 
     return document.getElementById(id);
